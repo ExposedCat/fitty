@@ -18,6 +18,8 @@
   ],
   "rules": {
     "@typescript-eslint/consistent-type-imports": "error",
-    "quotes": [2, "single", { "avoidEscape": true }]
+    "quotes": [2, "single", { "avoidEscape": true }],
+    "no-extra-parens": "error",
+    "arrow-parens": "error"
   }
 }
