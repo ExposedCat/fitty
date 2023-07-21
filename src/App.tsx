@@ -1,55 +1,10 @@
 import React from 'react';
-import type { PropsWithChildren } from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { SafeAreaView, StatusBar, Text, useColorScheme } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { useEnsureAuthorized } from './hooks/system';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({ children, title }: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}
-      >
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}
-      >
-        {children}
-      </Text>
-    </View>
-  );
-}
+import { useLastSteps } from './hooks/activities';
+import { minutesBefore } from './helpers/functions';
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -59,6 +14,13 @@ function App(): JSX.Element {
   };
 
   const isAuthorized = useEnsureAuthorized();
+  const steps = useLastSteps(minutesBefore(24 * 60));
+
+  if (!isAuthorized) {
+    return (
+      <Text>You need to sign in to your Google account to use this app.</Text>
+    );
+  }
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -66,28 +28,9 @@ function App(): JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <Text>{isAuthorized ? 'Authorized' : 'NOT Autorized'}</Text>
+      <Text>Steps: {steps}</Text>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
